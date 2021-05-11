@@ -71,7 +71,7 @@ public class breakfastEggScript : MonoBehaviour
     	//delegate button press to method
     	discardButton.OnInteract += delegate () { PressDiscard(); return false; };
 		confirmButton.OnInteract += delegate () { PressConfirm(); return false; };
-		GetComponent<KMBombModule>().OnActivate += OnActivate;
+		GetComponent<KMBombModule>().OnActivate += SetCB;
 	}
 
 	// Use this for initialization
@@ -83,14 +83,11 @@ public class breakfastEggScript : MonoBehaviour
 		RandomizeEgg();
 	}
 
-	void OnActivate()
+	void SetCB()
 	{
-		if (colorblindActive)
+		foreach (TextMesh text in colorblindTexts)
 		{
-			foreach (TextMesh text in colorblindTexts)
-			{
-				text.gameObject.SetActive(true);
-			}
+			text.gameObject.SetActive(colorblindActive);
 		}
 	}
 
@@ -290,39 +287,39 @@ public class breakfastEggScript : MonoBehaviour
 
 	//twitch plays
 	#pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"!{0} press yum/yuk [Press the specified button; yum = eat the egg, yuk = trash the egg.]";
+	private readonly string TwitchHelpMessage = @"!{0} press yum/yuk [Press the specified button; yum = eat the egg, yuk = trash the egg.]. Other aliases may be acceptable. Use !{0} colo(u)rblind to toggle colorblind mode. Use !{0} tilt l/r to tilt the plate.";
 	#pragma warning restore 414
-	IEnumerator ProcessTwitchCommand(string command)
+	IEnumerator ProcessTwitchCommand(string input)
 	{
-		string[] parameters = command.Split(' ');
-		if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
-		{
-			yield return null;
-			if (parameters.Length > 2)
-			{
-				yield return "sendtochaterror Too many parameters!";
-			}
-			else if (parameters.Length == 1)
-			{
-				yield return "sendtochaterror Please specify which button to press!";
-			}
-			else
-			{
-				if (parameters[1] == "yum" || parameters[1] == "Yum" || parameters[1] == "YUM")
-				{
-					confirmButton.OnInteract();
-				}
-				else if (parameters[1] == "yuk" || parameters[1] == "Yuk" || parameters[1] == "YUK")
-				{
-					discardButton.OnInteract();
-				}
-				else
-				{
-					yield return "sendtochaterror The specified button to press '" + parameters[1] + "' is invalid!";
-					yield break;
-				}
-			}
-		}
-		yield break;
+        string[] validCommands = new[] { "YUM", "EAT", "YES", "YUMMY", "FUCKYEA", "FUCKYEAH", "VOTEYEA", "YUK", "TRASH", "NO", "KILL", "DISPOSE", "FUCKYOU", "FUCKNO", "VOTENAY" };
+        string command = input.Trim().ToUpperInvariant();
+        List<string> parameters = command.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        if (new string[] { "COLORBLIND", "COLOURBLIND", "CB" }.Contains(command))
+        {
+            yield return null;
+            colorblindActive = !colorblindActive;
+            SetCB();
+            yield break;
+        }
+        if (parameters[0] == "PRESS" || parameters[0] == "SUBMIT")
+            parameters.RemoveAt(0);
+        if (parameters.Count != 1)
+        {
+            yield return "sendtochaterror Invalid amount of parameters.";
+            yield break;
+        }
+        if (!validCommands.Contains(parameters[0]))
+        {
+            yield return string.Format("sendtochaterror Invalid button name <{0}>.", parameters[0]);
+            yield break;
+        }
+        yield return null;
+        (Array.IndexOf(validCommands, parameters[0]) < 7 ? confirmButton : discardButton).OnInteract();
+        yield return new WaitForSeconds(0.1f);
 	}
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        (isEdible ? confirmButton : discardButton).OnInteract();
+        yield return new WaitForSeconds(0.1f);
+    }
 }
