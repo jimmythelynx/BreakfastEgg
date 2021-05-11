@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615501dbe4f3fe94fbf4b564abb10237, type: 3}
+  m_Name: ModConfig
+  m_EditorClassIdentifier: 
+  id: breakfastEgg
+  title: Breakfast Egg
+  author: jimmythelynx
+  description: "Breakfast Egg 1.0\nFlavour Text\n\nModule ID: breakfastEgg\n\nCreated
+    by: jimmythelynx\n\nManual available here: URL\nRepository:\nSteam ID:\n\nSounds
+    from freesound.org:\n\u201EComical bite and chew\u201C by: watsnick\n\u201EDumping
+    Trash in a Trash Can\u201C by: deleted_user_7146007\n\u201EFried egg\u201C by:
+    f_sd"
+  version: 1.0
+  outputFolder: build
+  previewImage: {fileID: 2800000, guid: b453c46ffc5d64beebb15a9fb33f5f81, type: 3}
