@@ -14,13 +14,15 @@ MonoBehaviour:
   id: breakfastEgg
   title: Breakfast Egg
   author: jimmythelynx
-  description: "Breakfast Egg 1.0\nNo more simple egg shapes! Tilt the egg around
-    and watch the yolk change its rather esoteric colors. Figure out who\u2019s made
-    the egg and how it should look to decide whether you YUM the egg or YUK it away!\n\nModule
-    ID: breakfastEgg\n\nCreated by: jimmythelynx\n\nManual available here:\nRepository:
-    github.com/jimmythelynx/BreakfastEgg\n\nSounds from freesound.org:\n\u201EComical
-    bite and chew\u201C by: watsnick\n\u201EDumping Trash in a Trash Can\u201C by:
-    deleted_user_7146007\n\u201EFried egg\u201C by: f_sd"
-  version: 1.0
+  description: "Breakfast Egg 1.1\nNo more simple egg shapes! Tilt the egg around
+    and watch the yolk change its rather esoteric colors. Figure out who made the
+    egg and how it should look to decide whether you YUM the egg or YUK it away!\n\nModule
+    ID: breakfastEgg\n\nCreated by: jimmythelynx\nAdditional coding by: Danny7007
+    (Gamepad support, actual TP support and Autosolver)\n\nManual available here:
+    https://ktane.timwi.de/HTML/Breakfast%20Egg.html\nRepository: github.com/jimmythelynx/BreakfastEgg\n\nSounds
+    from freesound.org:\n\u201EComical bite and chew\u201C by: watsnick\n\u201EDumping
+    Trash in a Trash Can\u201C by: deleted_user_7146007\n\u201EFried egg\u201C by:
+    f_sd"
+  version: 1.1
   outputFolder: build
   previewImage: {fileID: 2800000, guid: b453c46ffc5d64beebb15a9fb33f5f81, type: 3}
