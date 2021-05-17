@@ -15,23 +15,23 @@ public class breakfastEggScript : MonoBehaviour
 	public KMSelectable discardButton;
 
 	public Material[] plateMaterials; //these are the materials for the plate: 0 = slate grey, 1 = pale teal, 2 = lavender, 3 = hazel-wood
-	public MeshRenderer plateBase;
+	public MeshRenderer plateBase; //this is the plate object (base and rim)
 	public MeshRenderer plateRim;
 
  	public Material[] yolkMaterials; //these are the colors for the egg yolk:  0 = crimson, 1 = orange, 2 = pink, 3 = beige, 4 = cyan, 5 = lime, 6 = petrol
 	public MeshRenderer yolk; //holds the connection to the egg yolk object
 
-	public Material[] shapeMaterials; // these are the shape textures 0 to 27
+	public Material[] shapeMaterials; //these are the shape textures 0 to 27
 	public MeshRenderer eggShape; //holds connection tp the egg shape object
 
-	private int yolkNumA; //this is the chosen yolk color 0-7 for both color extremes (A and B)
+	private int yolkNumA; //these are the chosen yolk colors 0-7 (A and B)
 	private int yolkNumB;
 	private int plateNum; //this is the chosen plate manufacturer 0-3 (KF, KNT, WNF, WTF)
-	private int batchNumber; // this is the batch for calculating the plate
-	private int chosenEgg; //this is the nr of the chosen egg from 0 to 27
-	private float eggRotation; // this is a random y-axis rotation made to the egg shape
+	private int batchNumber; //this is the batch for calculating the plate
+	private int chosenEgg; //this is the # of the chosen egg from 0 to 27
+	private float eggRotation; //this is a random y-axis rotation assigned to the egg shape
 
-	private bool isEdible; // this declares if the egg is edible
+	private bool isEdible; //this declares if the egg is edible
 
 	//Logging
 	static int moduleIdCounter = 1;
@@ -44,19 +44,12 @@ public class breakfastEggScript : MonoBehaviour
 	private string[] plateColorNames = new string[4] {"slate grey", "pale teal", "lavender", "hazel wood"};
 	private string[] manufacturerNames = new string[4] {"T.N.T", "K.T.N", "W.N.F", "W.T.F"};
 
-	//code stolen from 'Motion Sense Needy' that I don't really understand :)
-	private Transform _rootXForm = null;
-	private Quaternion RootObjectOrientation
-  	{
-  		get
-    	{
-     	 	if (_rootXForm != null)
-      		{
-        		return _rootXForm.rotation;
-      		}
-      		return Quaternion.identity;
-    	}
-  	}
+	//angles for the material lerp
+	private float tiltZ; //left-right tilt
+	private float tiltX; //up-down tilt
+	private const float _tiltXOffset = 76.5f; //this is the offset of the bomb: laying on the table vs. being upright in frot of the defuser.
+	private float tiltMax;  //max of tiltX and tiltZ
+	public GameObject plate; //platebase object for rotations
 
 	public KMColorblindMode colorblindMode; //the colorblind object attached to the module
   	public TextMesh[] colorblindTexts; //the texts used to display the color if colorblind mode is enabled
@@ -77,7 +70,6 @@ public class breakfastEggScript : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		_rootXForm = transform.root; // this grabs some transformation information from the root object (the bomb) to make the tilt-material-lerp work.
 		GetEdgework();
 		RandomizePlate();
 		RandomizeEgg();
@@ -95,15 +87,23 @@ public class breakfastEggScript : MonoBehaviour
 	void Update ()
 	{
 		if (moduleSolved) {return;}
-		//this makes the yolk color change when tilting the module left or right. up and down is a pain because the root orientation of the bomb is it lying on the table. So everything on the x-axis is offset by 90° (which isn't actually testable within the test harness)
-		Quaternion currentOrientation = RootObjectOrientation;
 
-		float tiltZ = currentOrientation.eulerAngles.z;
+		//this makes the yolk color change when tilting the module left/right/up/down each other frame.
+		tiltZ = plate.transform.rotation.eulerAngles.z; //z-angle of plate object
 		//this code block makes it so that the top down view on the module results in an angle of 0°. And every offset from that will be positive, no matter whether the module spawns on the frontside or backside of the bomb.
-		if (tiltZ > 180) tiltZ = 360 - tiltZ;
-		if (tiltZ > 90) tiltZ = 180 - tiltZ;
-		//Debug.LogFormat("[Breakfast Egg #{0}] Your orientation is: {1}", moduleId, tiltZ/60);
-		yolk.material.Lerp(yolkMaterials[yolkNumA], yolkMaterials[yolkNumB], tiltZ / 60);
+		if (tiltZ >= 180f) { tiltZ = 360f - tiltZ; }
+		if (tiltZ >= 90f) { tiltZ = 180f - tiltZ; }
+		tiltX = (plate.transform.rotation.eulerAngles.x + _tiltXOffset) % 360; //x-angle of plate object (including offset)
+		if (tiltX >= 180f) { tiltX = 360f - tiltX; }
+		if (tiltX >= 90f) { tiltX = 180f - tiltX; }
+		//take the maximum value
+		tiltMax = Math.Max(tiltZ, tiltX);
+		//Debug.LogFormat("[Breakfast Egg #{0}] Z value is: {1}", moduleId, tiltZ);
+		//Debug.LogFormat("[Breakfast Egg #{0}] X value is: {1}", moduleId, tiltX);
+		//Debug.LogFormat("[Breakfast Egg #{0}] Max value is: {1}", moduleId, tiltMax);
+		//Debug.LogFormat("[Breakfast Egg #{0}] Lerp value is: {1}", moduleId, tiltMax / 60f);
+		yolk.material.Lerp(yolkMaterials[yolkNumA], yolkMaterials[yolkNumB], tiltMax / 60f);
+		//testing this in test harness is a pain because the root orientation of the bomb in TH is diffrent from the game (bomb spawning vertically vs. horizonally).
 	}
 
 	void GetEdgework()

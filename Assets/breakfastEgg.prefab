@@ -4371,6 +4371,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 9c4637a9065ff456ca2b3966042a6696, type: 2}
   - {fileID: 2100000, guid: e0027c8da210042d8af02b15492d6f50, type: 2}
   eggShape: {fileID: 23113708320795620}
+  plate: {fileID: 1399420286346498}
   colorblindMode: {fileID: 114600440692235114}
   colorblindTexts:
   - {fileID: 102237685934682904}
