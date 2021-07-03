@@ -83,8 +83,8 @@ public class breakfastEggScript : MonoBehaviour
 		}
 	}
 
-	// Update is called once per frame
-	void Update ()
+	// FixedUpdate is called once every 50 ms.
+	void FixedUpdate()
 	{
 		if (moduleSolved) {return;}
 
